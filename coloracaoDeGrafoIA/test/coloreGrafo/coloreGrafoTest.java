@@ -1,9 +1,9 @@
+package coloreGrafo;
+import junit.framework.TestCase;
 import coloracaodegrafoia.ColoreGrafo;
 import coloracaodegrafoia.GrafoNo;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
-public class coloreGrafoTest {
+public class coloreGrafoTest extends TestCase {
 
     public coloreGrafoTest() {
 
