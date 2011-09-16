@@ -19,21 +19,40 @@ public class ColoreGrafo {
 
     public void colore(GrafoNo noInicial) {
         LinkedList<GrafoNo> fila = new LinkedList<GrafoNo>();
-
-        noInicial = new GrafoNo();
-        noInicial.setCor(coresEnum.RED);
+        LinkedList<GrafoNo> visitados = new LinkedList<GrafoNo>();
 
         fila.add(noInicial);
+        visitados.add(no);
 
-        GrafoNo no = noInicial;
-
-        for ( int i = 0; i< no.getQuantidadeNosAdjacentes(); i++ ) {
-            if ( ! fila.contains(no.getNosAdjacentes().get(i))) {
-                fila.add(no.getNosAdjacentes().get(i));
-
+        noInicial.setCor(red);
+        GrafoNo no;
+        GrafoNo noAdjacente;        
+        while (fila.size() > 0 ) {
+            
+            no = fila.removeFirst();           
+            for ( int i = 0; i< no.getQuantidadeNosAdjacentes(); i++ ) {
+                noAdjacente = no.getNosAdjacentes(i);
                 
+                if ( ! visitados.contains(noAdjacente) ) {
+                    visitados.add(noAdjacente);
+                    fila.add(noAdjacente);
+                    
+                    cor = randomCor(); // RED
+                    
+                }
             }
-        }
+
+            boolean corIgual = false;
+            while ( true ) {
+                cor = randomCor(); // RED
+                i = 0;
+                while (! corIgual) ) {
+                    noAdjacente = no.getNosAdjacentes(i);
+                    corIgual = (noAdjacente.getCor().equal(cor));
+                    i++;
+                }
+            }     
+        }    
     }
 
 }

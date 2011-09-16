@@ -10,8 +10,8 @@ package coloracaodegrafoia;
  * @author shiga
  */
 public enum  coresEnum {
-WHITE,
-RED,
-GREEN,
-BLUE
+    WHITE,
+    RED,
+    GREEN,
+    BLUE
 }
