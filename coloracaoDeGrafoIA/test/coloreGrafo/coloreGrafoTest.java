@@ -1,35 +1,118 @@
 package coloreGrafo;
+import core.ColoreGrafo;
+import core.ColoreGrafoBuscaEmLargura;
+import core.ColoreGrafoHelper;
+import core.CoresEnum;
+import core.GrafoNo;
+import exceptions.ColoreGrafoException;
+import exceptions.ImpossivelColorirException;
+import exceptions.ReferenciaCiclicaException;
 import junit.framework.TestCase;
-import coloracaodegrafoia.ColoreGrafo;
-import coloracaodegrafoia.GrafoNo;
 
 public class coloreGrafoTest extends TestCase {
 
-    public coloreGrafoTest() {
+	@Override
+	protected void setUp() {
+		ColoreGrafoHelper.getInstancia().reset();
+	}
+	
+    public void testColoreGrafo() {
 
-        GrafoNo a = new GrafoNo();
-        GrafoNo b = new GrafoNo();
-        GrafoNo c = new GrafoNo();
-        GrafoNo d = new GrafoNo();
+        GrafoNo a = new GrafoNo("a");
+        GrafoNo b = new GrafoNo("b");
+        GrafoNo c = new GrafoNo("c");
+        GrafoNo d = new GrafoNo("d");
 
-        a.adicionaNoAdjacente(b);
-        a.adicionaNoAdjacente(c);
-
-        b.adicionaNoAdjacente(a);
-        b.adicionaNoAdjacente(c);
-
-        c.adicionaNoAdjacente(a);
-        c.adicionaNoAdjacente(b);
-        c.adicionaNoAdjacente(d);
-
-        d.adicionaNoAdjacente(c);
-
-        ColoreGrafo grafo = new ColoreGrafo();
-        grafo.colore(a);
-
-
-
-
+        try {
+	        a.adicionaNoAdjacente(b);
+	        a.adicionaNoAdjacente(c);
+	        b.adicionaNoAdjacente(c);
+	        c.adicionaNoAdjacente(d);
+	        
+	        ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+	        grafo.colore(a);
+	    } catch (ColoreGrafoException e) {
+	    	fail(e.getMessage());
+		}
+	           
+        assertEquals(CoresEnum.RED , a.getCor());
+        assertEquals(2, a.getQuantidadeNosAdjacentes());
+        
+        assertEquals(CoresEnum.GREEN , b.getCor());
+        assertEquals(2, b.getQuantidadeNosAdjacentes());
+        
+        assertEquals(CoresEnum.BLUE , c.getCor());
+        assertEquals(3, c.getQuantidadeNosAdjacentes());
+        
+        assertEquals(CoresEnum.RED , d.getCor());
+        assertEquals(1, d.getQuantidadeNosAdjacentes());
     }
+    
+    public void testAdicionaMultiplosAdjacentes() {
+
+        GrafoNo a = new GrafoNo("a");
+        GrafoNo b = new GrafoNo("b");
+        GrafoNo c = new GrafoNo("c");
+        GrafoNo d = new GrafoNo("d");
+
+        try {
+        	a.adicionaNoAdjacente(a);
+        	fail("Deveria ter dado excecao");
+        } catch (ReferenciaCiclicaException e) {
+    	}
+        
+        try {
+        	a.adicionaNoAdjacente(b);
+        	a.adicionaNoAdjacente(b);
+        	a.adicionaNoAdjacente(b);
+        	a.adicionaNoAdjacente(b);
+        	
+            a.adicionaNoAdjacente(c);
+            b.adicionaNoAdjacente(c);
+            c.adicionaNoAdjacente(d);
+        
+            ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+            grafo.colore(a);            
+        } catch (ImpossivelColorirException e) {
+        	fail(e.getMessage());
+    	} catch (ReferenciaCiclicaException e) {
+    		fail(e.getMessage());
+    	}	
+               
+        assertEquals(CoresEnum.RED , a.getCor());
+        assertEquals(CoresEnum.GREEN , b.getCor());
+        assertEquals(CoresEnum.BLUE , c.getCor());
+        assertEquals(CoresEnum.RED , d.getCor());
+    }
+    
+    public void testTentaColorirGrafoImpossivelDeSerColorido() {
+
+        GrafoNo a = new GrafoNo("a");
+        GrafoNo b = new GrafoNo("b");
+        GrafoNo c = new GrafoNo("c");
+        GrafoNo d = new GrafoNo("d");
+
+        try {
+        	a.adicionaNoAdjacente(b);
+        	a.adicionaNoAdjacente(c);
+        	a.adicionaNoAdjacente(d);
+        	
+        	b.adicionaNoAdjacente(c);
+        	b.adicionaNoAdjacente(d);
+        	
+        	c.adicionaNoAdjacente(d);
+        	
+        } catch (ColoreGrafoException ex) {
+        	fail(ex.getMessage());
+    	}	
+
+        ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+        try {
+        	grafo.colore(a);
+        	fail("Deveria ter dado excecao");
+        } catch (ColoreGrafoException ex) {
+        	//
+        }
+    }      
 
 }
