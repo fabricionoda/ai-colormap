@@ -1,5 +1,4 @@
 package coloreGrafo;
-import core.ColoreGrafo;
 import core.ColoreGrafoBuscaEmLargura;
 import core.ColoreGrafoHelper;
 import core.CoresEnum;
@@ -29,7 +28,7 @@ public class coloreGrafoTest extends TestCase {
 	        b.adicionaNoAdjacente(c);
 	        c.adicionaNoAdjacente(d);
 	        
-	        ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+	        ColoreGrafoBuscaEmLargura grafo = new ColoreGrafoBuscaEmLargura();
 	        grafo.colore(a);
 	    } catch (ColoreGrafoException e) {
 	    	fail(e.getMessage());
@@ -71,7 +70,7 @@ public class coloreGrafoTest extends TestCase {
             b.adicionaNoAdjacente(c);
             c.adicionaNoAdjacente(d);
         
-            ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+            ColoreGrafoBuscaEmLargura grafo = new ColoreGrafoBuscaEmLargura();
             grafo.colore(a);            
         } catch (ImpossivelColorirException e) {
         	fail(e.getMessage());
@@ -106,13 +105,13 @@ public class coloreGrafoTest extends TestCase {
         	fail(ex.getMessage());
     	}	
 
-        ColoreGrafo grafo = new ColoreGrafoBuscaEmLargura();
+        ColoreGrafoBuscaEmLargura grafo = new ColoreGrafoBuscaEmLargura();
         try {
         	grafo.colore(a);
         	fail("Deveria ter dado excecao");
         } catch (ColoreGrafoException ex) {
         	//
         }
-    }      
+    }
 
 }
