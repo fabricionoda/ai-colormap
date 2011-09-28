@@ -1,7 +1,10 @@
 package coloreGrafo;
 
+import java.util.LinkedList;
+
 import core.ColoreGrafoPSR;
 import core.CoresEnum;
+import core.GrafoNo;
 import exceptions.ColoreGrafoException;
 import junit.framework.TestCase;
 
@@ -18,7 +21,6 @@ public class ColorePSRTest extends TestCase {
 			colore.novaRestricao("A", "C");
 			colore.novaRestricao("A", "E");
 			colore.novaRestricao("B", "E");
-			colore.novaRestricao("B", "E");
 			colore.novaRestricao("B", "F");
 			colore.novaRestricao("C", "E");
 			colore.novaRestricao("C", "F");
@@ -29,7 +31,16 @@ public class ColorePSRTest extends TestCase {
 			fail(e.getMessage());
 		}
 		
-		assertEquals(6, colore.getVariaveis().size());
+		LinkedList<GrafoNo> variaveis = colore.getVariaveis();
+		
+		assertEquals(6, variaveis.size());
+		
+		assertEquals(variaveis.get(0).getNome(), "E");
+		assertEquals(variaveis.get(1).getNome(), "F");
+		assertEquals(variaveis.get(1).getNome(), "A");
+		assertEquals(variaveis.get(1).getNome(), "C");
+		assertEquals(variaveis.get(1).getNome(), "B");
+		assertEquals(variaveis.get(1).getNome(), "D");
 		
 	}
 

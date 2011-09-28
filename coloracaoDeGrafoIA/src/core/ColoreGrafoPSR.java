@@ -1,10 +1,30 @@
 package core;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import exceptions.ImpossivelColorirException;
 import exceptions.ReferenciaCiclicaException;
 
 public class ColoreGrafoPSR extends ColoreGrafo {
+	
+	class NosPorQuantidadeAdjacentes {
+		
+		private Integer quantidade;
+		private GrafoNo no;
+		
+		public NosPorQuantidadeAdjacentes(GrafoNo no, Integer quantidade) {
+			this.quantidade = quantidade;
+			this.no = no;
+		}
+			
+	}	
 
 	private LinkedList<GrafoNo> nos = new LinkedList<GrafoNo>();
 	private LinkedList<CoresEnum> cores = new LinkedList<CoresEnum>();
@@ -21,13 +41,13 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	}
 	
 	public void variaveis(String... nos) {
-		
 		for (String no : nos) {
 			this.nos.add(new GrafoNo(no));
 		}
 	}
+	
 	public LinkedList<GrafoNo> getVariaveis() {
-		return this.nos;
+		return this.nosMaisRestritivos();
 	}
 	
 	public void dominio(CoresEnum... cores) {
@@ -55,11 +75,23 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	}
 	
 	private LinkedList<GrafoNo> nosMaisRestritivos() {
-		return this.nos;
+		LinkedList<GrafoNo> retorno = new LinkedList<GrafoNo>();
+		
+		List indices = new ArrayList();
+		List elementos = new ArrayList(); 
+		
+		
+		// INT na key da zica
+		for (GrafoNo no : this.nos) {
+			indices.add(no.getQuantidadeNosAdjacentes());
+			elementos.add(no);
+		}
+		
+		return retorno;
 	}
 	
 	public void colore() throws ImpossivelColorirException {
-		nosVisitados.clear();
+		this.nosVisitados.clear();
 		this.percorreGrafoApartirDe(null);
 	}		
 	
@@ -70,7 +102,7 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 		LinkedList<GrafoNo> nosRestritivos = this.nosMaisRestritivos();
 		for (GrafoNo no : nosRestritivos) {
 			nosVisitados.add(no);	
-			processaNo(no);	
+			processaNo(no);
 		}
 	}
 
