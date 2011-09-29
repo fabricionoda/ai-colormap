@@ -3,8 +3,7 @@ package core;
 import java.util.LinkedList;
 import exceptions.ReferenciaCiclicaException;
 
-//RELACIONAMENTO E DADOS DO GRAFO
-public class GrafoNo {
+public class GrafoNo implements Comparable<Object> {
 
     private CoresEnum cor; // RGB
     private LinkedList<GrafoNo> nosAdjacentes;
@@ -50,6 +49,17 @@ public class GrafoNo {
     public int getQuantidadeNosAdjacentes() {
         return this.nosAdjacentes.size();
     }
+
+	@Override
+	public int compareTo(Object arg0) {
+        Integer val1 = this.getQuantidadeNosAdjacentes();
+        Integer val2 = ((GrafoNo) arg0).getQuantidadeNosAdjacentes();
+        if (val1 < val2) {
+            return -1;
+        } else {
+            return 1;
+        }
+	}
 
 
 

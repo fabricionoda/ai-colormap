@@ -1,12 +1,6 @@
 package core;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import exceptions.ImpossivelColorirException;
@@ -14,23 +8,12 @@ import exceptions.ReferenciaCiclicaException;
 
 public class ColoreGrafoPSR extends ColoreGrafo {
 	
-	class NosPorQuantidadeAdjacentes {
-		
-		private Integer quantidade;
-		private GrafoNo no;
-		
-		public NosPorQuantidadeAdjacentes(GrafoNo no, Integer quantidade) {
-			this.quantidade = quantidade;
-			this.no = no;
-		}
-			
-	}	
-
 	private LinkedList<GrafoNo> nos = new LinkedList<GrafoNo>();
 	private LinkedList<CoresEnum> cores = new LinkedList<CoresEnum>();
 	private LinkedList<String> restricoes = new LinkedList<String>();
 	private LinkedList<GrafoNo> nosVisitados = new LinkedList<GrafoNo>();
-
+	private boolean heuristicaDeOrdenarPorRestricao = true;
+	
 	private GrafoNo procuraNo(String nomeNo) {
 		for (GrafoNo no : this.nos) {
 			if (no.getNome().equals(nomeNo)) {
@@ -39,6 +22,14 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 		}
 		return null;
 	}
+	
+	public void ativarHeuristicaDeOrdenarPorRestricao() {
+		this.heuristicaDeOrdenarPorRestricao = true;
+	}
+	
+	public void desativarHeuristicaDeOrdenarPorRestricao() {
+		this.heuristicaDeOrdenarPorRestricao = false;
+	}	
 	
 	public void variaveis(String... nos) {
 		for (String no : nos) {
@@ -76,18 +67,18 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	
 	private LinkedList<GrafoNo> nosMaisRestritivos() {
 		LinkedList<GrafoNo> retorno = new LinkedList<GrafoNo>();
-		
-		List indices = new ArrayList();
-		List elementos = new ArrayList(); 
-		
-		
-		// INT na key da zica
+  	    TreeMap<GrafoNo,Integer> nosMaisRestritivos = new TreeMap<GrafoNo,Integer>();
+  	    
 		for (GrafoNo no : this.nos) {
-			indices.add(no.getQuantidadeNosAdjacentes());
-			elementos.add(no);
+			nosMaisRestritivos.put(no, no.getQuantidadeNosAdjacentes());
+		}
+		
+		for (GrafoNo no : nosMaisRestritivos.descendingKeySet()) {
+			retorno.add(no);
 		}
 		
 		return retorno;
+		
 	}
 	
 	public void colore() throws ImpossivelColorirException {
@@ -99,7 +90,13 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	protected void percorreGrafoApartirDe(GrafoNo noInicial)
 			throws ImpossivelColorirException {
 		
-		LinkedList<GrafoNo> nosRestritivos = this.nosMaisRestritivos();
+		LinkedList<GrafoNo> nosRestritivos = null;
+		
+		if (this.heuristicaDeOrdenarPorRestricao) {
+			nosRestritivos = this.nosMaisRestritivos();
+		} else {
+			nosRestritivos = this.nos;
+		}
 		for (GrafoNo no : nosRestritivos) {
 			nosVisitados.add(no);	
 			processaNo(no);
@@ -108,8 +105,7 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 
 	@Override
 	protected void naoFoiPossivelColorir() throws ImpossivelColorirException {
-		// imprementassao do backtracking
-		
+		throw new ImpossivelColorirException("BackTrack");
 		
 	}
 
