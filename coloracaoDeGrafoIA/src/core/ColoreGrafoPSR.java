@@ -3,6 +3,7 @@ package core;
 import java.util.LinkedList;
 import java.util.TreeMap;
 
+import exceptions.ImpossivelColorirBackTrackRequiredException;
 import exceptions.ImpossivelColorirException;
 import exceptions.ReferenciaCiclicaException;
 
@@ -11,7 +12,6 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	private LinkedList<GrafoNo> nos = new LinkedList<GrafoNo>();
 	private LinkedList<CoresEnum> cores = new LinkedList<CoresEnum>();
 	private LinkedList<String> restricoes = new LinkedList<String>();
-	private LinkedList<GrafoNo> nosVisitados = new LinkedList<GrafoNo>();
 	private boolean heuristicaDeOrdenarPorRestricao = true;
 	
 	private GrafoNo procuraNo(String nomeNo) {
@@ -82,30 +82,69 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	}
 	
 	public void colore() throws ImpossivelColorirException {
-		this.nosVisitados.clear();
 		this.percorreGrafoApartirDe(null);
 	}		
 	
-	@Override
-	protected void percorreGrafoApartirDe(GrafoNo noInicial)
+	private LinkedList<GrafoNo> getNosParaProcessar() {
+		if (this.heuristicaDeOrdenarPorRestricao) {
+			return this.nosMaisRestritivos();
+		} else {
+			return this.nos;
+		}		
+	}
+	
+	private boolean backtrackTentaNosAdjacentes(GrafoNo noParaProcessar) {
+		int iAdjacente = 0;
+		boolean adjacenteColorido = false;
+		
+		while (iAdjacente < noParaProcessar.getQuantidadeNosAdjacentes() && (! adjacenteColorido)) {
+			GrafoNo noAdjacente = noParaProcessar.getNoAdjacente(iAdjacente);
+			
+			try { 
+				this.processaNo(noAdjacente);
+				adjacenteColorido = true;
+			} catch (ImpossivelColorirException e) {				
+				// nothing
+			}
+			
+			iAdjacente ++;
+		}
+		
+		return adjacenteColorido;
+	}
+	
+	private void executaBackTrack(LinkedList<GrafoNo> nosParaProcessar, Integer indice)
 			throws ImpossivelColorirException {
 		
-		LinkedList<GrafoNo> nosRestritivos = null;
+		GrafoNo noAtual = nosParaProcessar.get(indice);
 		
-		if (this.heuristicaDeOrdenarPorRestricao) {
-			nosRestritivos = this.nosMaisRestritivos();
-		} else {
-			nosRestritivos = this.nos;
+		this.backtrackTentaNosAdjacentes(noAtual);
+		
+		
+
+		
+	}
+	
+	@Override
+	protected void percorreGrafoApartirDe(GrafoNo noInicial) throws ImpossivelColorirException {
+		
+		LinkedList<GrafoNo> nosParaProcessar = this.getNosParaProcessar();
+		
+		int i = 0;
+		while ( i < nosParaProcessar.size() ) {
+			try {
+				this.processaNo(nosParaProcessar.get(i));
+				i++;
+			} catch (ImpossivelColorirBackTrackRequiredException e) {
+				this.executaBackTrack(nosParaProcessar, i);				
+			}
 		}
-		for (GrafoNo no : nosRestritivos) {
-			nosVisitados.add(no);	
-			processaNo(no);
-		}
+		
 	}
 
 	@Override
 	protected void naoFoiPossivelColorir() throws ImpossivelColorirException {
-		throw new ImpossivelColorirException("BackTrack");
+		throw new ImpossivelColorirBackTrackRequiredException("BackTrack");
 		
 	}
 
