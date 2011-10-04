@@ -61,6 +61,8 @@ public class GrafoNo implements Comparable<Object> {
         }
 	}
 
-
+	public void print() {
+		
+	}
 
 }

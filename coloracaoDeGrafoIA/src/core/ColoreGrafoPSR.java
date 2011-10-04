@@ -116,13 +116,17 @@ public class ColoreGrafoPSR extends ColoreGrafo {
 	private void executaBackTrack(LinkedList<GrafoNo> nosParaProcessar, Integer indice)
 			throws ImpossivelColorirException {
 		
+		if (indice < 0)
+			throw new ImpossivelColorirException("Não foi possível colorir este grafo");
+
 		GrafoNo noAtual = nosParaProcessar.get(indice);
 		
-		this.backtrackTentaNosAdjacentes(noAtual);
-		
-		
-
-		
+		Log.show("  " + noAtual.getNome() + " - BACKTRACK");
+		if (! this.backtrackTentaNosAdjacentes(noAtual) ) {
+			noAtual.setCor(CoresEnum.WHITE);
+			this.executaBackTrack(nosParaProcessar, indice - 1);
+		}
+			
 	}
 	
 	@Override

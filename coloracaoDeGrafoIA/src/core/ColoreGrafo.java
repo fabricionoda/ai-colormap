@@ -20,10 +20,15 @@ public abstract class ColoreGrafo {
 		GrafoNo noAdjacente;
 		int tentativas = 0;
 		int maxTentativas = ColoreGrafoHelper.getInstancia().getQuantidadeDeCores();
-
+		
 		while (! corDiferenteDosAdjacentes) {
+			
+			do {
+				cor = this.getProximaCor();
+			} while (noProcessado.getCor().equals(cor));
+			
+			Log.show("  " + noProcessado.getNome() + " -> " + cor);			
 			corDiferenteDosAdjacentes = true;
-			cor = this.getProximaCor();
 			
 			for ( int i = 0; i < noProcessado.getQuantidadeNosAdjacentes(); i++ ) {
 				noAdjacente = noProcessado.getNosAdjacentes().get(i);

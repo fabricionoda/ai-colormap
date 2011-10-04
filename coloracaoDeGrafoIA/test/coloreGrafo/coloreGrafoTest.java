@@ -1,4 +1,5 @@
 package coloreGrafo;
+import main.ColoreGrafosController;
 import core.ColoreGrafoBuscaEmLargura;
 import core.ColoreGrafoHelper;
 import core.CoresEnum;
@@ -112,6 +113,25 @@ public class coloreGrafoTest extends TestCase {
         } catch (ColoreGrafoException ex) {
         	//
         }
+    }
+    
+    public void testRodaGrafosDoController() {
+    	try {
+    		ColoreGrafosController.getInstancia().buscaLargura4Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura5Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura6Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura7Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura8Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura10Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura15Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura20Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura30Nos();
+    		ColoreGrafosController.getInstancia().buscaLargura40Nos();
+    		
+    		assertTrue(true);
+    	} catch (Exception e) {
+    		fail(e.getMessage());
+    	}
     }
 
 }
